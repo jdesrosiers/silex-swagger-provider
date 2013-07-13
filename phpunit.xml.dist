@@ -9,10 +9,14 @@
          stopOnFailure="false"
          syntaxCheck="false"
 >
+    <testsuites>
+        <testsuite name="silex-swagger-provider Test Suite">
+            <directory>./tests/</directory>
+        </testsuite>
+    </testsuites>
     <filter>
-        <blacklist>
-            <directory>../vendor</directory>
-            <directory>../cache</directory>
-        </blacklist>
+        <whitelist>
+            <directory>./src</directory>
+        </whitelist>
     </filter>
 </phpunit>
