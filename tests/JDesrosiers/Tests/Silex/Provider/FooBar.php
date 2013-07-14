@@ -12,7 +12,7 @@ use Swagger\Annotations as SWG;
  *     basePath="http://localhost:8000"
  * )
  */
-class Foo
+class FooBar
 {
     /**
      * @SWG\Api(
