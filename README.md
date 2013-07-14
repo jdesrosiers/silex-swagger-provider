@@ -9,7 +9,9 @@ Parameters
 ----------
 * **swagger.srcDir**: The path to the swagger-php component.
 * **swagger.servicePath**: The path to the classes that contain your swagger annotations.
+* **swagger.excludePath**: A colon `:` separated list of paths to be excluded when generating annotations.
 * **swagger.apiDocPath**: The URI that will be used to access the swagger definition. Defaults to `/api-docs.json`.
+* **swagger.prettyPrint**: Determines whether or not the JSON generated will be formatted for human readability.
 
 Services
 --------
