@@ -87,18 +87,7 @@ class SwaggerServiceProviderTest extends \PHPUnit_Framework_TestCase
         }
     }
 
-    public function dataProviderNotModified()
-    {
-        return array(
-            array('"b8d16d36abff11017913105082d7e5b1"', 304, false),
-            array('"7913105082d7e5b1b8d16d36abff1101"', 200, true),
-        );
-    }
-
-    /**
-     * @dataProvider dataProviderNotModified
-     */
-    public function testNotModified($etag, $status, $hasContent)
+    public function testNotModified()
     {
         $app = new Application();
         $app->register(new SwaggerServiceProvider(), array(
@@ -106,13 +95,35 @@ class SwaggerServiceProviderTest extends \PHPUnit_Framework_TestCase
             "swagger.servicePath" => __DIR__,
         ));
 
-        $client = new Client($app, array("HTTP_IF_NONE_MATCH" => $etag));
+        $json = $app["swagger"]->getResourceList($app["swagger.prettyPrint"]);
+
+        $client = new Client($app, array("HTTP_IF_NONE_MATCH" => '"' . md5($json) . '"'));
         $client->request("GET", "/api-docs.json");
 
         $response = $client->getResponse();
 
-        $this->assertEquals($status, $response->getStatusCode());
-        $this->assertEquals($hasContent, strlen($response->getContent()) > 0);
+        $this->assertEquals(304, $response->getStatusCode());
+        $this->assertEquals("", $response->getContent());
 //        $this->assertEquals($hasContent, $response->headers->has("Content-Type"));
+    }
+
+    public function testModified()
+    {
+        $app = new Application();
+        $app->register(new SwaggerServiceProvider(), array(
+            "swagger.srcDir" => __DIR__ . "/../../../../../vendor/zircote/swagger-php/library",
+            "swagger.servicePath" => __DIR__,
+        ));
+
+        $json = $app["swagger"]->getResourceList($app["swagger.prettyPrint"]);
+
+        $client = new Client($app, array("HTTP_IF_NONE_MATCH" => '"49fe5e81e4d90156fbef0a3ae347777f"'));
+        $client->request("GET", "/api-docs.json");
+
+        $response = $client->getResponse();
+
+        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertEquals($json, $response->getContent());
+        $this->assertEquals("application/json", $response->headers->get("Content-Type"));
     }
 }
