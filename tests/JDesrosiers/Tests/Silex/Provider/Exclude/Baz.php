@@ -14,14 +14,6 @@ use Swagger\Annotations as SWG;
  */
 class Baz
 {
-    /**
-     * @SWG\Api(
-     *     path="/baz",
-     *     @SWG\Operations(
-     *         @SWG\Operation(httpMethod="GET", responseClass="BazModel")
-     *     )
-     * )
-     */
     public function baz()
     {
 

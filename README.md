@@ -49,3 +49,8 @@ $app["swagger.cache"] = array(
     "public": true,
 )
 ```
+
+Logging
+-------
+Swagger uses php notices and warnings to log issues it encounters when trying to generate your API documentation.  If
+your silex application has a `logger` service, it will log those issues as well.

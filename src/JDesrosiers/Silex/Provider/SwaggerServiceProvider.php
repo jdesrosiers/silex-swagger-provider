@@ -6,6 +6,7 @@ use Doctrine\Common\Annotations\AnnotationRegistry;
 use Silex\Application;
 use Silex\ServiceProviderInterface;
 use Swagger\Swagger;
+use Swagger\Logger;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -15,6 +16,24 @@ class SwaggerServiceProvider implements ServiceProviderInterface
     public function boot(Application $app)
     {
         AnnotationRegistry::registerAutoloadNamespace("Swagger\Annotations", $app["swagger.srcDir"]);
+
+        if (class_exists("Swagger\Logger") && $app["logger"]) {
+            $logger = Logger::getInstance();
+            $originalLog = $logger->log;
+            $logger->log = function ($entry, $type) use ($app, $originalLog) {
+                switch ($type) {
+                    case E_USER_NOTICE:
+                        $app["logger"]->warning($entry);
+                        break;
+
+                    case E_USER_WARNING:
+                        $app["logger"]->error($entry);
+                        break;
+                }
+
+                $originalLog($entry, $type);
+            };
+        }
 
         $app->get($app["swagger.apiDocPath"], function (Request $request) use ($app) {
             $json = $app["swagger"]->getResourceList($app["swagger.prettyPrint"]);
