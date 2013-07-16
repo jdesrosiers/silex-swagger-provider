@@ -121,7 +121,7 @@ class SwaggerServiceProviderTest extends \PHPUnit_Framework_TestCase
         $this->app["swagger.excludePath"] = null;
 
         if (class_exists("Swagger\Logger")) {
-            $this->app["logger"] = $this->getMock("Psr\Log\LoggerInterface", array("emergency", "alert", "critical", "warning", "notice", "error", "info", "debug", "log"));
+            $this->app["logger"] = $this->getMock("Symfony\Component\HttpKernel\Log\LoggerInterface");
 
             $this->app["logger"]->expects($this->once())
                     ->method("warning")
