@@ -1,12 +1,24 @@
 silex-swagger-provider
 ======================
 
-[![Build Status](https://travis-ci.org/jdesrosiers/silex-swagger-provider.png)](https://travis-ci.org/jdesrosiers/silex-swagger-provider)
+[![Build Status](https://travis-ci.org/jdesrosiers/silex-swagger-provider.png?branch=master)](https://travis-ci.org/jdesrosiers/silex-swagger-provider)
 
 [silex-swagger-provider](https://github.com/jdesrosiers/silex-swagger-provider) is a silex service provider that
 integrates [swagger-php](https://github.com/zircote/swagger-php) into [silex](https://github.com/fabpot/Silex).  This
 service provider adds routes for generating and exposing a swagger defintion based on swagger-php annotations.  The
 swagger definition can then be used with [swagger-ui](https://github.com/wordnik/swagger-ui).
+
+Installation
+------------
+Install the silex-swagger-provider using [composer](http://getcomposer.org/).  This project uses [sematic versioning](http://semver.org/).
+
+```json
+{
+    "require": {
+        "jdesrosiers/silex-swagger-provider": "~0.1"
+    }
+}
+```
 
 Parameters
 ----------
