@@ -8,6 +8,18 @@ integrates [swagger-php](https://github.com/zircote/swagger-php) into [silex](ht
 service provider adds routes for generating and exposing a swagger defintion based on swagger-php annotations.  The
 swagger definition can then be used with [swagger-ui](https://github.com/wordnik/swagger-ui).
 
+Installation
+------------
+Install the silex-swagger-provider using [composer](http://getcomposer.org/).  This project uses [sematic versioning](http://semver.org/).
+
+```json
+{
+    "require": {
+        "jdesrosiers/silex-swagger-provider": "~0.1"
+    }
+}
+```
+
 Parameters
 ----------
 * **swagger.srcDir**: The path to the swagger-php component.
