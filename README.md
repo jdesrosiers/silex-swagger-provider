@@ -2,6 +2,9 @@ silex-swagger-provider
 ======================
 
 [![Build Status](https://travis-ci.org/jdesrosiers/silex-swagger-provider.png?branch=master)](https://travis-ci.org/jdesrosiers/silex-swagger-provider)
+[![Scrutinizer Continuous Inspections](https://scrutinizer-ci.com/g/jdesrosiers/silex-swagger-provider/badges/general.png?s=28b0cb934469ff164179fd1bc5909b18635aaffc)](https://scrutinizer-ci.com/g/jdesrosiers/silex-swagger-provider/)
+[![Scrutinizer Quality Score](https://scrutinizer-ci.com/g/jdesrosiers/silex-swagger-provider/badges/quality-score.png?s=b8a3f40bdf416ccc53fcff296fc3bd00ea5e3f48)](https://scrutinizer-ci.com/g/jdesrosiers/silex-swagger-provider/)
+[![Code Coverage](https://scrutinizer-ci.com/g/jdesrosiers/silex-swagger-provider/badges/coverage.png?s=5df2c7fb18f7a0e2d7cef52ab9661810b6b45d6b)](https://scrutinizer-ci.com/g/jdesrosiers/silex-swagger-provider/)
 
 [silex-swagger-provider](https://github.com/jdesrosiers/silex-swagger-provider) is a silex service provider that
 integrates [swagger-php](https://github.com/zircote/swagger-php) into [silex](https://github.com/fabpot/Silex).  This
