@@ -18,7 +18,7 @@ Install the silex-swagger-provider using [composer](http://getcomposer.org/).  T
 ```json
 {
     "require": {
-        "jdesrosiers/silex-swagger-provider": "~0.1"
+        "jdesrosiers/silex-swagger-provider": "~1.0"
     }
 }
 ```
@@ -28,7 +28,7 @@ Parameters
 * **swagger.srcDir**: The path to the swagger-php component.
 * **swagger.servicePath**: The path to the classes that contain your swagger annotations.
 * **swagger.excludePath**: A colon `:` separated list of paths to be excluded when generating annotations.
-* **swagger.apiDocPath**: The URI that will be used to access the swagger definition. Defaults to `/api-docs.json`.
+* **swagger.apiDocPath**: The URI that will be used to access the swagger definition. Defaults to `/api/api-docs`.
 * **swagger.prettyPrint**: Determines whether or not the JSON generated will be formatted for human readability.
 * **swagger.cache**: An array of caching options that will be passed to Symfony 2's `Response::setCache` method.
 
@@ -48,8 +48,8 @@ $app->register(new JDesrosiers\Silex\Provider\SwaggerServiceProvider(), array(
 Usage
 -----
 The following routes are made available by default
-* `GET /api-docs.json`: Get the list of resources
-* `GET /resources/{service}.json`: Get the definition for a specific resource
+* `GET /api/api-docs`: Get the list of resources
+* `GET /api/api-docs/{service}`: Get the definition for a specific resource
 
 The results of the swagger definition file is not cached internally.  Instead, the routes that are created are designed
 to work with an HTTP cache such as a browser cache or reverse proxy.  You can configure how you want to your service
@@ -69,3 +69,58 @@ Logging
 -------
 Swagger uses php notices and warnings to log issues it encounters when trying to generate your API documentation.  If
 your silex application has a `logger` service, it will log those issues as well.
+
+Getting Started
+---------------
+The following is a minimal example to get you started quickly.  It uses the [jdesrosiers/silex-cors-provider](https://github.com/jdesrosiers/silex-cors-provider)
+to allow us to use the demo installation of swagger-ui so we don't have to stand up our own.  See the
+[swagger-php documentation](http://zircote.com/swagger-php/) for details on how to expand on this example.
+
+* Create a composer.json with at minimum, the following dependecies
+
+```json
+{
+    "require": {
+        "jdesrosiers/silex-swagger-provider": "~1.0",
+        "jdesrosiers/cors-swagger-provider": "dev-master"
+    }
+}
+```
+* Run composer install
+* Create /web/index.php
+
+```php
+<?php
+
+use Swagger\Annotations as SWG;
+
+require __DIR__ . "/../vendor/autoload.php";
+
+/**
+ * @SWG\Resource(basePath="http://localhost:8000", resourcePath="/foo")
+ */
+$app = new Silex\Application();
+$app["debug"] = true;
+
+$app->register(new JDesrosiers\Silex\Provider\SwaggerServiceProvider(), array(
+    "swagger.srcDir" => __DIR__ . "/../vendor/zircote/swagger-php/library",
+    "swagger.servicePath" => __DIR__ . "/",
+));
+
+$app->register(new JDesrosiers\Silex\Provider\CorsServiceProvider(), array(
+    "cors.allowOrigin" => "http://petstore.swagger.wordnik.com",
+));
+
+/**
+ * @SWG\Api(path="/foo", @SWG\Operations(@SWG\Operation(httpMethod="GET", nickname="foo")))
+ */
+$app->get('/foo', function () use ($app) {
+    return 'bar';
+});
+
+$app->after($app["cors"]);
+
+$app->run();
+```
+* Run the service `php -S localhost:8000 -t web web/index.php`
+* Go to http://petstore.swagger.wordnik.com and put `http://localhost:8000/api/api-docs` in the top input field and click `Explore`

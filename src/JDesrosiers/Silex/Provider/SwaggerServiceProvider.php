@@ -36,9 +36,21 @@ class SwaggerServiceProvider implements ServiceProviderInterface
         }
 
         $app->get($app["swagger.apiDocPath"], function (Request $request) use ($app) {
-            $json = $app["swagger"]->getResourceList($app["swagger.prettyPrint"]);
+            $list = $app["swagger"]->getResourceList($app["swagger.prettyPrint"], false);
 
-            $response = new Response($json, 200, array("Content-Type" => "application/json"));
+            $apis = array();
+            foreach ($list["apis"] as $api) {
+                $matches = array();
+                if (preg_match('/^\/resources(\/.+)\.\{format\}$/', $api["path"], $matches)) {
+                    $api["path"] = $matches[1];
+                }
+
+                $apis[] = $api;
+            }
+            $list["apis"] = $apis;
+            $json = $app["swagger.prettyPrint"] ? json_encode($list, JSON_PRETTY_PRINT) : json_encode($list);
+
+            $response = Response::create($json, 200, array("Content-Type" => "application/json"));
             $response->setCache($app["swagger.cache"]);
             $response->setEtag(md5($json));
             $response->isNotModified($request);
@@ -46,7 +58,7 @@ class SwaggerServiceProvider implements ServiceProviderInterface
             return $response;
         });
 
-        $app->get(dirname($app["swagger.apiDocPath"]) . "/resources/{service}.json", function (Request $request, $service) use ($app) {
+        $app->get($app["swagger.apiDocPath"] . "/{service}", function (Request $request, $service) use ($app) {
             $resourceName = "/" . str_replace("-", "/", $service);
             if (!in_array($resourceName, $app["swagger"]->getResourceNames())) {
                 throw new NotFoundHttpException("No such swagger definition");
@@ -54,7 +66,7 @@ class SwaggerServiceProvider implements ServiceProviderInterface
 
             $json = $app["swagger"]->getResource($resourceName, $app["swagger.prettyPrint"]);
 
-            $response = new Response($json, 200, array("Content-Type" => "application/json"));
+            $response = Response::create($json, 200, array("Content-Type" => "application/json"));
             $response->setCache($app["swagger.cache"]);
             $response->setEtag(md5($json));
             $response->isNotModified($request);
@@ -65,7 +77,7 @@ class SwaggerServiceProvider implements ServiceProviderInterface
 
     public function register(Application $app)
     {
-        $app["swagger.apiDocPath"] = "/api-docs.json";
+        $app["swagger.apiDocPath"] = "/api/api-docs";
         $app["swagger.excludePath"] = null;
         $app["swagger.prettyPrint"] = true;
         $app["swagger.cache"] = array();

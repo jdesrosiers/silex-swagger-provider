@@ -25,10 +25,10 @@ class SwaggerServiceProviderTest extends \PHPUnit_Framework_TestCase
     public function dataProviderApiDocs()
     {
         return array(
-            array("/api-docs.json", "/foo", "/resources/foo.json", "/resources/baz.json"),
-            array("/api-docs.json", "/foo/bar", "/resources/foo-bar.json", "/resources/baz.json"),
-            array("/api/api-docs.json", "/foo", "/api/resources/foo.json", "/api/resources/baz.json"),
-            array("/api/api-docs.json", "/foo/bar", "/api/resources/foo-bar.json", "/api/resources/baz.json"),
+            array("/api-docs", "/foo", "/api-docs/foo", "/api-docs/baz"),
+            array("/api-docs", "/foo/bar", "/api-docs/foo-bar", "/api-docs/baz"),
+            array("/api/api-docs", "/foo", "/api/api-docs/foo", "/api/api-docs/baz"),
+            array("/api/api-docs", "/foo/bar", "/api/api-docs/foo-bar", "/api/api-docs/baz"),
         );
     }
 
@@ -37,6 +37,23 @@ class SwaggerServiceProviderTest extends \PHPUnit_Framework_TestCase
      */
     public function testApiDocs($apiDocPath, $resource, $resourcePath, $excludePath)
     {
+        $json = <<<JSON
+{
+    "apiVersion": "0.1",
+    "swaggerVersion": "1.1",
+    "apis": [
+        {
+            "path": "\/foo",
+            "description": null
+        },
+        {
+            "path": "\/foo-bar",
+            "description": null
+        }
+    ]
+}
+JSON;
+
         $this->app["swagger.apiDocPath"] = $apiDocPath;
 
         // Test resource list
@@ -45,7 +62,7 @@ class SwaggerServiceProviderTest extends \PHPUnit_Framework_TestCase
         $response = $client->getResponse();
         $this->assertEquals(200, $response->getStatusCode());
         $this->assertEquals("application/json", $response->headers->get("Content-Type"));
-        $this->assertEquals($this->app["swagger"]->getResourceList($this->app["swagger.prettyPrint"]), $response->getContent());
+        $this->assertEquals($json, $response->getContent());
 
         // Test resource
         $client = new Client($this->app);
@@ -79,7 +96,7 @@ class SwaggerServiceProviderTest extends \PHPUnit_Framework_TestCase
         $this->app["swagger.cache"] = $cache;
 
         $client = new Client($this->app);
-        $client->request("GET", "/api-docs.json");
+        $client->request("GET", "/api/api-docs");
         $response = $client->getResponse();
 
         $this->assertEquals(200, $response->getStatusCode());
@@ -90,10 +107,25 @@ class SwaggerServiceProviderTest extends \PHPUnit_Framework_TestCase
 
     public function testNotModified()
     {
-        $json = $this->app["swagger"]->getResourceList($this->app["swagger.prettyPrint"]);
+        $json = <<<JSON
+{
+    "apiVersion": "0.1",
+    "swaggerVersion": "1.1",
+    "apis": [
+        {
+            "path": "\/foo",
+            "description": null
+        },
+        {
+            "path": "\/foo-bar",
+            "description": null
+        }
+    ]
+}
+JSON;
 
         $client = new Client($this->app, array("HTTP_IF_NONE_MATCH" => '"' . md5($json) . '"'));
-        $client->request("GET", "/api-docs.json");
+        $client->request("GET", "/api/api-docs");
         $response = $client->getResponse();
 
         $this->assertEquals(304, $response->getStatusCode());
@@ -105,10 +137,25 @@ class SwaggerServiceProviderTest extends \PHPUnit_Framework_TestCase
 
     public function testModified()
     {
-        $json = $this->app["swagger"]->getResourceList($this->app["swagger.prettyPrint"]);
+        $json = <<<JSON
+{
+    "apiVersion": "0.1",
+    "swaggerVersion": "1.1",
+    "apis": [
+        {
+            "path": "\/foo",
+            "description": null
+        },
+        {
+            "path": "\/foo-bar",
+            "description": null
+        }
+    ]
+}
+JSON;
 
         $client = new Client($this->app, array("HTTP_IF_NONE_MATCH" => '"49fe5e81e4d90156fbef0a3ae347777f"'));
-        $client->request("GET", "/api-docs.json");
+        $client->request("GET", "/api/api-docs");
         $response = $client->getResponse();
 
         $this->assertEquals(200, $response->getStatusCode());
@@ -129,7 +176,7 @@ class SwaggerServiceProviderTest extends \PHPUnit_Framework_TestCase
         }
 
         $client = new Client($this->app);
-        $client->request("GET", "/api-docs.json");
+        $client->request("GET", "/api/api-docs");
         $client->getResponse();
     }
 }
