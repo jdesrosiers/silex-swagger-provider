@@ -43,11 +43,11 @@ class SwaggerServiceProviderTest extends \PHPUnit_Framework_TestCase
     "swaggerVersion": "1.1",
     "apis": [
         {
-            "path": "\/foo",
+            "path": "/foo",
             "description": null
         },
         {
-            "path": "\/foo-bar",
+            "path": "/foo-bar",
             "description": null
         }
     ]
@@ -113,11 +113,11 @@ JSON;
     "swaggerVersion": "1.1",
     "apis": [
         {
-            "path": "\/foo",
+            "path": "/foo",
             "description": null
         },
         {
-            "path": "\/foo-bar",
+            "path": "/foo-bar",
             "description": null
         }
     ]
@@ -143,11 +143,11 @@ JSON;
     "swaggerVersion": "1.1",
     "apis": [
         {
-            "path": "\/foo",
+            "path": "/foo",
             "description": null
         },
         {
-            "path": "\/foo-bar",
+            "path": "/foo-bar",
             "description": null
         }
     ]

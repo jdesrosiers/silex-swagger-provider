@@ -35,9 +35,12 @@ class SwaggerServiceProvider implements ServiceProviderInterface
             };
         }
 
+        // Create route for GETting the resource list
         $app->get($app["swagger.apiDocPath"], function (Request $request) use ($app) {
             $list = $app["swagger"]->getResourceList($app["swagger.prettyPrint"], false);
 
+            // swagger-php doesn't yet have a way to build resources correctly for swagger-ui 2.0, so we need to make
+            // some modifications manually.  This should be refactored when swagger-php can do it for us.
             $apis = array();
             foreach ($list["apis"] as $api) {
                 $matches = array();
@@ -48,7 +51,8 @@ class SwaggerServiceProvider implements ServiceProviderInterface
                 $apis[] = $api;
             }
             $list["apis"] = $apis;
-            $json = $app["swagger.prettyPrint"] ? json_encode($list, JSON_PRETTY_PRINT) : json_encode($list);
+
+            $json = $app["swagger"]->jsonEncode($list, $app["swagger.prettyPrint"]);
 
             $response = Response::create($json, 200, array("Content-Type" => "application/json"));
             $response->setCache($app["swagger.cache"]);
@@ -58,6 +62,7 @@ class SwaggerServiceProvider implements ServiceProviderInterface
             return $response;
         });
 
+        // Create route for GETting each of the resource definitions
         $app->get($app["swagger.apiDocPath"] . "/{service}", function (Request $request, $service) use ($app) {
             $resourceName = "/" . str_replace("-", "/", $service);
             if (!in_array($resourceName, $app["swagger"]->getResourceNames())) {
