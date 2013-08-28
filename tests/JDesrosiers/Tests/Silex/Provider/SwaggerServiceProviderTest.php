@@ -37,22 +37,20 @@ class SwaggerServiceProviderTest extends \PHPUnit_Framework_TestCase
      */
     public function testApiDocs($apiDocPath, $resource, $resourcePath, $excludePath)
     {
-        $json = <<<JSON
-{
-    "apiVersion": "0.1",
-    "swaggerVersion": "1.1",
-    "apis": [
-        {
-            "path": "/foo",
-            "description": null
-        },
-        {
-            "path": "/foo-bar",
-            "description": null
-        }
-    ]
-}
-JSON;
+        $resourceList = array(
+            "apiVersion" => "0.1",
+            "swaggerVersion" => "1.1",
+            "apis" => array(
+                array(
+                    "path" => "/foo",
+                    "description" => null,
+                ),
+                array(
+                    "path" => "/foo-bar",
+                    "description" => null,
+                ),
+            ),
+        );
 
         $this->app["swagger.apiDocPath"] = $apiDocPath;
 
@@ -62,7 +60,7 @@ JSON;
         $response = $client->getResponse();
         $this->assertEquals(200, $response->getStatusCode());
         $this->assertEquals("application/json", $response->headers->get("Content-Type"));
-        $this->assertEquals($json, $response->getContent());
+        $this->assertEquals($resourceList, json_decode($response->getContent(), true));
 
         // Test resource
         $client = new Client($this->app);
@@ -107,24 +105,11 @@ JSON;
 
     public function testNotModified()
     {
-        $json = <<<JSON
-{
-    "apiVersion": "0.1",
-    "swaggerVersion": "1.1",
-    "apis": [
-        {
-            "path": "/foo",
-            "description": null
-        },
-        {
-            "path": "/foo-bar",
-            "description": null
-        }
-    ]
-}
-JSON;
+        $client = new Client($this->app);
+        $client->request("GET", "/api/api-docs");
+        $response = $client->getResponse();
 
-        $client = new Client($this->app, array("HTTP_IF_NONE_MATCH" => '"' . md5($json) . '"'));
+        $client = new Client($this->app, array("HTTP_IF_NONE_MATCH" => $response->headers->get("ETag")));
         $client->request("GET", "/api/api-docs");
         $response = $client->getResponse();
 
@@ -137,29 +122,12 @@ JSON;
 
     public function testModified()
     {
-        $json = <<<JSON
-{
-    "apiVersion": "0.1",
-    "swaggerVersion": "1.1",
-    "apis": [
-        {
-            "path": "/foo",
-            "description": null
-        },
-        {
-            "path": "/foo-bar",
-            "description": null
-        }
-    ]
-}
-JSON;
-
         $client = new Client($this->app, array("HTTP_IF_NONE_MATCH" => '"49fe5e81e4d90156fbef0a3ae347777f"'));
         $client->request("GET", "/api/api-docs");
         $response = $client->getResponse();
 
         $this->assertEquals(200, $response->getStatusCode());
-        $this->assertEquals($json, $response->getContent());
+        $this->assertTrue(strlen($response->getContent()) > 0);
         $this->assertEquals("application/json", $response->headers->get("Content-Type"));
     }
 
