@@ -135,13 +135,10 @@ class SwaggerServiceProviderTest extends \PHPUnit_Framework_TestCase
     {
         $this->app["swagger.excludePath"] = null;
 
-        if (class_exists("Swagger\Logger")) {
-            $this->app["logger"] = $this->getMock("Symfony\Component\HttpKernel\Log\LoggerInterface");
-
-            $this->app["logger"]->expects($this->once())
-                    ->method("warning")
-                    ->with("Resource \"http://localhost:8000\" doesn't have any valid api calls");
-        }
+        $this->app["logger"] = $this->getMock("Symfony\Component\HttpKernel\Log\LoggerInterface");
+        $this->app["logger"]->expects($this->once())
+                ->method("warning")
+                ->with("Resource \"http://localhost:8000\" doesn't have any valid api calls");
 
         $client = new Client($this->app);
         $client->request("GET", "/api/api-docs");
