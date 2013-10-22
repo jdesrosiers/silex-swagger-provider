@@ -59,8 +59,8 @@ customize caching behavior.  The following example will allow the service defini
 
 ```php
 $app["swagger.cache"] = array(
-    "max_age": "7200", // 5 days in minutes
-    "s_maxage": "7200", // 5 days in minutes
+    "max_age": "432000", // 5 days in seconds
+    "s_maxage": "432000", // 5 days in seconds
     "public": true,
 )
 ```
