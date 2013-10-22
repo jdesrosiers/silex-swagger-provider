@@ -112,7 +112,7 @@ $app->register(new JDesrosiers\Silex\Provider\CorsServiceProvider(), array(
 ));
 
 /**
- * @SWG\Api(path="/foo", @SWG\Operations(@SWG\Operation(httpMethod="GET", nickname="foo")))
+ * @SWG\Api(path="/foo", @SWG\Operations(@SWG\Operation(method="GET", nickname="foo")))
  */
 $app->get('/foo', function () use ($app) {
     return 'bar';

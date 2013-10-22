@@ -39,7 +39,7 @@ class SwaggerServiceProviderTest extends \PHPUnit_Framework_TestCase
     {
         $resourceList = array(
             "apiVersion" => "0.1",
-            "swaggerVersion" => "1.1",
+            "swaggerVersion" => "1.2",
             "apis" => array(
                 array(
                     "path" => "/foo",
@@ -50,6 +50,14 @@ class SwaggerServiceProviderTest extends \PHPUnit_Framework_TestCase
                     "description" => null,
                 ),
             ),
+        );
+
+        $expectedResponse = $this->app["swagger"]->getResource(
+            $resource,
+            array(
+                "output" => "json",
+                "json_pretty_print" => $this->app["swagger.prettyPrint"],
+            )
         );
 
         $this->app["swagger.apiDocPath"] = $apiDocPath;
@@ -68,7 +76,7 @@ class SwaggerServiceProviderTest extends \PHPUnit_Framework_TestCase
         $response = $client->getResponse();
         $this->assertEquals(200, $response->getStatusCode());
         $this->assertEquals("application/json", $response->headers->get("Content-Type"));
-        $this->assertEquals($this->app["swagger"]->getResource($resource, $this->app["swagger.prettyPrint"]), $response->getContent());
+        $this->assertEquals($expectedResponse, $response->getContent());
 
         // Test excluded resource
         $client = new Client($this->app);
@@ -129,19 +137,5 @@ class SwaggerServiceProviderTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(200, $response->getStatusCode());
         $this->assertTrue(strlen($response->getContent()) > 0);
         $this->assertEquals("application/json", $response->headers->get("Content-Type"));
-    }
-
-    public function testLogging()
-    {
-        $this->app["swagger.excludePath"] = null;
-
-        $this->app["logger"] = $this->getMock("Symfony\Component\HttpKernel\Log\LoggerInterface");
-        $this->app["logger"]->expects($this->once())
-                ->method("warning")
-                ->with("Resource \"http://localhost:8000\" doesn't have any valid api calls");
-
-        $client = new Client($this->app);
-        $client->request("GET", "/api/api-docs");
-        $client->getResponse();
     }
 }

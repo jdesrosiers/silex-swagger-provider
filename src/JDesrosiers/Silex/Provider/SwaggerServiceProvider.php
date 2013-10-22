@@ -47,7 +47,7 @@ class SwaggerServiceProvider implements ServiceProviderInterface
     public function register(Application $app)
     {
         $app["swagger.apiDocPath"] = "/api/api-docs";
-        $app["swagger.excludePath"] = null;
+        $app["swagger.excludePath"] = array();
         $app["swagger.prettyPrint"] = true;
         $app["swagger.cache"] = array();
 
@@ -68,22 +68,12 @@ class SwaggerServiceProvider implements ServiceProviderInterface
      */
     public function getResourceList(Application $app, Request $request)
     {
-        $list = $app["swagger"]->getResourceList($app["swagger.prettyPrint"], false);
-
-        // swagger-php doesn't yet have a way to build resources correctly for swagger-ui 2.0, so we need to
-        // make some modifications manually.  This should be refactored when swagger-php can do it for us.
-        $apis = array();
-        foreach ($list["apis"] as $api) {
-            $matches = array();
-            if (preg_match('/^\/resources(\/.+)\.\{format\}$/', $api["path"], $matches)) {
-                $api["path"] = $matches[1];
-            }
-
-            $apis[] = $api;
-        }
-        $list["apis"] = $apis;
-
-        $json = $app["swagger"]->jsonEncode($list, $app["swagger.prettyPrint"]);
+        $json = $app["swagger"]->getResourceList(
+            array(
+                "output" => "json",
+                "json_pretty_print" => $app["swagger.prettyPrint"]
+            )
+        );
 
         $response = Response::create($json, 200, array("Content-Type" => "application/json"));
         $response->setCache($app["swagger.cache"]);
@@ -110,7 +100,13 @@ class SwaggerServiceProvider implements ServiceProviderInterface
             throw new NotFoundHttpException("No such swagger definition");
         }
 
-        $json = $app["swagger"]->getResource($resourceName, $app["swagger.prettyPrint"]);
+        $json = $app["swagger"]->getResource(
+            $resourceName,
+            array(
+                "output" => "json",
+                "json_pretty_print" => $app["swagger.prettyPrint"]
+            )
+        );
 
         $response = Response::create($json, 200, array("Content-Type" => "application/json"));
         $response->setCache($app["swagger.cache"]);
