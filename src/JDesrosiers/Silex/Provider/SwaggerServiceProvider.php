@@ -30,7 +30,7 @@ class SwaggerServiceProvider implements ServiceProviderInterface
             $logger = Logger::getInstance();
             $originalLog = $logger->log;
             $logger->log = function ($entry, $type) use ($app, $originalLog) {
-                $app["logger"]->warning($entry);
+                $app["logger"]->notice($entry);
                 $originalLog($entry, $type);
             };
         }
@@ -68,12 +68,11 @@ class SwaggerServiceProvider implements ServiceProviderInterface
      */
     public function getResourceList(Application $app, Request $request)
     {
-        $json = $app["swagger"]->getResourceList(
-            array(
-                "output" => "json",
-                "json_pretty_print" => $app["swagger.prettyPrint"]
-            )
+        $options = array(
+            "output" => "json",
+            "json_pretty_print" => $app["swagger.prettyPrint"],
         );
+        $json = $app["swagger"]->getResourceList($options);
 
         $response = Response::create($json, 200, array("Content-Type" => "application/json"));
         $response->setCache($app["swagger.cache"]);
@@ -96,17 +95,17 @@ class SwaggerServiceProvider implements ServiceProviderInterface
     public function getResourceDefinition(Application $app, Request $request, $service)
     {
         $resourceName = "/" . str_replace("-", "/", $service);
-        if (!in_array($resourceName, $app["swagger"]->getResourceNames())) {
-            throw new NotFoundHttpException("No such swagger definition");
+        $resourceNames = $app["swagger"]->getResourceNames();
+        if (!in_array($resourceName, $resourceNames)) {
+            $resourceNamesDisplay = implode('", "', $resourceNames);
+            throw new NotFoundHttpException("Resource \"$resourceName\" not found, try \"$resourceNamesDisplay\"");
         }
 
-        $json = $app["swagger"]->getResource(
-            $resourceName,
-            array(
-                "output" => "json",
-                "json_pretty_print" => $app["swagger.prettyPrint"]
-            )
+        $options = array(
+            "output" => "json",
+            "json_pretty_print" => $app["swagger.prettyPrint"]
         );
+        $json = $app["swagger"]->getResource($resourceName, $options);
 
         $response = Response::create($json, 200, array("Content-Type" => "application/json"));
         $response->setCache($app["swagger.cache"]);

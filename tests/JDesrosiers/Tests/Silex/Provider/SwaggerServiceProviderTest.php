@@ -52,13 +52,11 @@ class SwaggerServiceProviderTest extends \PHPUnit_Framework_TestCase
             ),
         );
 
-        $expectedResponse = $this->app["swagger"]->getResource(
-            $resource,
-            array(
-                "output" => "json",
-                "json_pretty_print" => $this->app["swagger.prettyPrint"],
-            )
+        $options = array(
+            "output" => "json",
+            "json_pretty_print" => $this->app["swagger.prettyPrint"]
         );
+        $expectedResponse = $this->app["swagger"]->getResource($resource, $options);
 
         $this->app["swagger.apiDocPath"] = $apiDocPath;
 
@@ -137,5 +135,21 @@ class SwaggerServiceProviderTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(200, $response->getStatusCode());
         $this->assertTrue(strlen($response->getContent()) > 0);
         $this->assertEquals("application/json", $response->headers->get("Content-Type"));
+    }
+
+    public function testLogging()
+    {
+        $this->app["swagger.excludePath"] = array();
+        $this->app["swagger.servicePath"] = __DIR__ . "/../../../../../vendor/zircote/swagger-php";
+        $realPath = realpath($this->app["swagger.servicePath"]);
+
+        $this->app["logger"] = $this->getMock("Symfony\Component\HttpKernel\Log\LoggerInterface");
+        $this->app["logger"]->expects($this->once())
+            ->method("notice")
+            ->with("Skipping files in \"$realPath/tests\" add your \"vendor\" directory to the exclude paths");
+
+        $client = new Client($this->app);
+        $client->request("GET", "/api/api-docs");
+        $client->getResponse();
     }
 }

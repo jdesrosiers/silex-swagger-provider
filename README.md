@@ -82,7 +82,7 @@ to allow us to use the demo installation of swagger-ui so we don't have to stand
 {
     "require": {
         "jdesrosiers/silex-swagger-provider": "~1.0",
-        "jdesrosiers/cors-swagger-provider": "dev-master"
+        "jdesrosiers/silex-cors-provider": "~0.1"
     }
 }
 ```
