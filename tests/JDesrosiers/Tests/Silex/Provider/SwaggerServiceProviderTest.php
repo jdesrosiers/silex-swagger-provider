@@ -8,6 +8,8 @@ use Symfony\Component\HttpKernel\Client;
 
 require_once __DIR__ . "/../../../../../vendor/autoload.php";
 
+date_default_timezone_set("GMT");
+
 class SwaggerServiceProviderTest extends \PHPUnit_Framework_TestCase
 {
     protected $app;
@@ -43,11 +45,9 @@ class SwaggerServiceProviderTest extends \PHPUnit_Framework_TestCase
             "apis" => array(
                 array(
                     "path" => "/foo",
-                    "description" => null,
                 ),
                 array(
                     "path" => "/foo-bar",
-                    "description" => null,
                 ),
             ),
         );
