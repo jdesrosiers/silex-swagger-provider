@@ -31,6 +31,11 @@ Parameters
 * **swagger.apiDocPath**: The URI that will be used to access the swagger definition. Defaults to `/api/api-docs`.
 * **swagger.prettyPrint**: Determines whether or not the JSON generated will be formatted for human readability.
 * **swagger.cache**: An array of caching options that will be passed to Symfony 2's `Response::setCache` method.
+* **swagger.basePath**: The url where your API can be found. If your Swagger annotation contains a basePath it will override this value. Eg. "http://api.example.com/
+* **swagger.apiVersion**: The version of your API. If your Swagger annotation contains a version it will override this value.
+* **swagger.swaggerVersion**: The Swagger version of your API. If your Swagger annotation contains a swagger version it will override this value.
+* **swagger.resourcePrefix**: A prefix string that will be appended for every resource URI. Defaults to "/".
+* **swagger.resourceSuffix**: A suffix string that will be appended for every resource URI. Defaults to "".
 
 Services
 --------
