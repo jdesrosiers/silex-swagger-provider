@@ -1,7 +1,7 @@
 silex-swagger-provider
 ======================
 
-[![Build Status](https://travis-ci.org/jdesrosiers/silex-swagger-provider.png?branch=v0.1.0)](https://travis-ci.org/jdesrosiers/silex-swagger-provider)
+[![Build Status](https://travis-ci.org/jdesrosiers/silex-swagger-provider.png?branch=v0)](https://travis-ci.org/jdesrosiers/silex-swagger-provider)
 
 [silex-swagger-provider](https://github.com/jdesrosiers/silex-swagger-provider) is a silex service provider that
 integrates [swagger-php](https://github.com/zircote/swagger-php) into [silex](https://github.com/fabpot/Silex).  This
