@@ -29,8 +29,10 @@ class SwaggerServiceProviderTest extends \PHPUnit_Framework_TestCase
         return array(
             array("/api-docs", "/foo", "/api-docs/foo", "/api-docs/baz"),
             array("/api-docs", "/foo/bar", "/api-docs/foo-bar", "/api-docs/baz"),
+            array("/api-docs", "/fooBarDefaults", "/api-docs/fooBarDefaults", "/api-docs/baz"),
             array("/api/api-docs", "/foo", "/api/api-docs/foo", "/api/api-docs/baz"),
             array("/api/api-docs", "/foo/bar", "/api/api-docs/foo-bar", "/api/api-docs/baz"),
+            array("/api/api-docs", "/fooBarDefaults", "/api/api-docs/fooBarDefaults", "/api/api-docs/baz"),
         );
     }
 
@@ -49,9 +51,11 @@ class SwaggerServiceProviderTest extends \PHPUnit_Framework_TestCase
                 array(
                     "path" => "/foo-bar",
                 ),
+                array(
+                    "path" => "/fooBarDefaults",
+                ),
             ),
         );
-
         $options = array(
             "output" => "json",
             "json_pretty_print" => $this->app["swagger.prettyPrint"]
@@ -59,6 +63,68 @@ class SwaggerServiceProviderTest extends \PHPUnit_Framework_TestCase
         $expectedResponse = $this->app["swagger"]->getResource($resource, $options);
 
         $this->app["swagger.apiDocPath"] = $apiDocPath;
+
+        // Test resource list
+        $client = new Client($this->app);
+        $client->request("GET", $apiDocPath);
+        $response = $client->getResponse();
+        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertEquals("application/json", $response->headers->get("Content-Type"));
+        $this->assertEquals($resourceList, json_decode($response->getContent(), true));
+
+        // Test resource
+        $client = new Client($this->app);
+        $client->request("GET", $resourcePath);
+        $response = $client->getResponse();
+        $this->assertEquals(200, $response->getStatusCode());
+        $this->assertEquals("application/json", $response->headers->get("Content-Type"));
+        $this->assertEquals($expectedResponse, $response->getContent());
+
+        // Test excluded resource
+        $client = new Client($this->app);
+        $client->request("GET", $excludePath);
+        $response = $client->getResponse();
+        $this->assertEquals(404, $response->getStatusCode());
+    }
+
+
+    /**
+     * @dataProvider dataProviderApiDocs
+     * Ensure that swagger.basePath, .apiVersion and .swaggerVersion options
+     * are respected.
+     */
+    public function testApiDocsDefaults($apiDocPath, $resource, $resourcePath, $excludePath)
+    {
+        $resourceList = array(
+            "apiVersion" => "1.1",
+            "swaggerVersion" => "9.9.9",
+            "basePath" => "http://localhost:8888",
+            "apis" => array(
+              array(
+                  "path" => "/foo",
+              ),
+              array(
+                  "path" => "/foo-bar",
+              ),
+              array(
+                  "path" => "/fooBarDefaults",
+              ),
+            ),
+        );
+
+        $this->app["swagger.apiDocPath"] = $apiDocPath;
+        $this->app["swagger.basePath"] = $resourceList['basePath'];
+        $this->app["swagger.apiVersion"] = $resourceList['apiVersion'];
+        $this->app["swagger.swaggerVersion"] = $resourceList['swaggerVersion'];
+
+        $options = array(
+            "output" => "json",
+            "json_pretty_print" => $this->app["swagger.prettyPrint"],
+            "defaultBasePath" => $resourceList['basePath'],
+            "defaultApiVersion" => $resourceList['apiVersion'],
+            "defaultSwaggerVersion" => $resourceList['swaggerVersion'],
+        );
+        $expectedResponse = $this->app["swagger"]->getResource($resource, $options);
 
         // Test resource list
         $client = new Client($this->app);
