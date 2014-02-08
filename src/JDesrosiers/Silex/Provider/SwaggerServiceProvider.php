@@ -77,10 +77,10 @@ class SwaggerServiceProvider implements ServiceProviderInterface
             "output" => "json",
             "json_pretty_print" => $app["swagger.prettyPrint"],
             'basePath' => $app["swagger.basePath"],
-            'prefix' => $app["swagger.resourcePrefix"],
-            'suffix' => $app["swagger.resourceSuffix"],
-            'apiVersion' => $app["swagger.apiVersion"],
-            'swaggerVersion' => $app["swagger.swaggerVersion"],
+            "prefix" => $app["swagger.resourcePrefix"],
+            "suffix" => $app["swagger.resourceSuffix"],
+            "apiVersion" => $app["swagger.apiVersion"],
+            "swaggerVersion" => $app["swagger.swaggerVersion"],
         );
         $json = $app["swagger"]->getResourceList($options);
 
@@ -114,9 +114,9 @@ class SwaggerServiceProvider implements ServiceProviderInterface
         $options = array(
             "output" => "json",
             "json_pretty_print" => $app["swagger.prettyPrint"],
-            'defaultBasePath' => $app["swagger.basePath"],
-            'defaultApiVersion' => $app["swagger.apiVersion"],
-            'defaultSwaggerVersion' => $app["swagger.swaggerVersion"],
+            "defaultBasePath" => $app["swagger.basePath"],
+            "defaultApiVersion" => $app["swagger.apiVersion"],
+            "defaultSwaggerVersion" => $app["swagger.swaggerVersion"],
         );
         $json = $app["swagger"]->getResource($resourceName, $options);
 
