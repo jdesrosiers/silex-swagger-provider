@@ -1,6 +1,7 @@
 silex-swagger-provider
 ======================
 
+[![Gittip](http://img.shields.io/gittip/jdesrosiers.svg)](https://www.gittip.com/jdesrosiers/)
 [![Build Status](https://travis-ci.org/jdesrosiers/silex-swagger-provider.png?branch=master)](https://travis-ci.org/jdesrosiers/silex-swagger-provider)
 [![Scrutinizer Continuous Inspections](https://scrutinizer-ci.com/g/jdesrosiers/silex-swagger-provider/badges/general.png?s=28b0cb934469ff164179fd1bc5909b18635aaffc)](https://scrutinizer-ci.com/g/jdesrosiers/silex-swagger-provider/)
 [![Scrutinizer Quality Score](https://scrutinizer-ci.com/g/jdesrosiers/silex-swagger-provider/badges/quality-score.png?s=b8a3f40bdf416ccc53fcff296fc3bd00ea5e3f48)](https://scrutinizer-ci.com/g/jdesrosiers/silex-swagger-provider/)
