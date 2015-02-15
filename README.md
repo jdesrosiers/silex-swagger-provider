@@ -114,7 +114,7 @@ $app->register(new JDesrosiers\Silex\Provider\SwaggerServiceProvider(), array(
 ));
 
 $app->register(new JDesrosiers\Silex\Provider\CorsServiceProvider(), array(
-    "cors.allowOrigin" => "http://petstore.swagger.wordnik.com",
+    "cors.allowOrigin" => "http://petstore.swagger.io",
 ));
 
 /**
@@ -129,4 +129,4 @@ $app->after($app["cors"]);
 $app->run();
 ```
 * Run the service `php -S localhost:8000 -t web web/index.php`
-* Go to http://petstore.swagger.wordnik.com and put `http://localhost:8000/api/api-docs` in the top input field and click `Explore`
+* Go to http://petstore.swagger.io/ and put `http://localhost:8000/api/api-docs` in the top input field and click `Explore`
