@@ -10,7 +10,7 @@
         }
     ],
     "require": {
-        "silex/silex": "~1.0",
+        "silex/silex": "~2.0@dev",
         "zircote/swagger-php": "~0.8,<0.10.0"
     },
     "require-dev": {
@@ -24,6 +24,5 @@
     },
     "scripts": {
         "test": "vendor/bin/phpunit --colors"
-    },
-    "minimum-stability": "stable"
+    }
 }

@@ -3,15 +3,18 @@
 namespace JDesrosiers\Silex\Provider;
 
 use Doctrine\Common\Annotations\AnnotationRegistry;
+use Pimple\Container;
+use Pimple\ServiceProviderInterface;
+use Silex\Api\BootableProviderInterface;
 use Silex\Application;
-use Silex\ServiceProviderInterface;
 use Swagger\Logger;
+use Swagger\Swagger;
 
 /**
  * The SwaggerServiceProvider adds a swagger-php service to a silex app.  It also adds the routes necessary for
  * integrating with swagger-ui.
  */
-class SwaggerServiceProvider implements ServiceProviderInterface
+class SwaggerServiceProvider implements ServiceProviderInterface, BootableProviderInterface
 {
     /**
      * Add routes to the app that generate swagger documentation based on your annotations
@@ -40,7 +43,7 @@ class SwaggerServiceProvider implements ServiceProviderInterface
      *
      * @param Application $app
      */
-    public function register(Application $app)
+    public function register(Container $app)
     {
         $app["swagger.apiDocPath"] = "/api/api-docs";
         $app["swagger.excludePath"] = array();
@@ -52,6 +55,8 @@ class SwaggerServiceProvider implements ServiceProviderInterface
         $app["swagger.resourcePrefix"] = "/";
         $app["swagger.resourceSuffix"] = "";
 
-        $app["swagger"] = $app->share(new SwaggerService());
+        $app["swagger"] = function (Container $app) {
+            return new Swagger($app["swagger.servicePath"], $app["swagger.excludePath"]);
+        };
     }
 }
