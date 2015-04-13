@@ -14,7 +14,7 @@ use Swagger\Annotations as SWG;
  */
 class Baz
 {
-    public function baz()
+    public function run()
     {
 
     }

@@ -7,7 +7,7 @@ use Swagger\Swagger;
 
 class SwaggerService
 {
-    function __invoke(Application $app)
+    public function __invoke(Application $app)
     {
         return new Swagger($app["swagger.servicePath"], $app["swagger.excludePath"]);
     }

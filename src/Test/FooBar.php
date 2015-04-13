@@ -22,7 +22,7 @@ class FooBar
      *     )
      * )
      */
-    public function fooBar()
+    public function run()
     {
 
     }

@@ -22,7 +22,7 @@ class Foo
      *     )
      * )
      */
-    public function foo()
+    public function run()
     {
 
     }

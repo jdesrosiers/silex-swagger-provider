@@ -18,7 +18,7 @@ class FooBarDefaults
      *     )
      * )
      */
-    public function fooBarDefaults()
+    public function run()
     {
 
     }
