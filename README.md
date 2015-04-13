@@ -17,7 +17,7 @@ Install the silex-swagger-provider using [composer](http://getcomposer.org/).  T
 ```json
 {
     "require": {
-        "jdesrosiers/silex-swagger-provider": "~1.0"
+        "jdesrosiers/silex-swagger-provider": "silex-2@dev"
     }
 }
 ```
