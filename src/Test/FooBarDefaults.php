@@ -1,6 +1,6 @@
 <?php
 
-namespace JDesrosiers\Tests\Silex\Provider;
+namespace JDesrosiers\Silex\Provider\Test;
 
 use Swagger\Annotations as SWG;
 

@@ -1,6 +1,6 @@
 <?php
 
-namespace JDesrosiers\Tests\Silex\Provider;
+namespace JDesrosiers\Silex\Provider\Test;
 
 use Swagger\Annotations as SWG;
 
@@ -8,21 +8,21 @@ use Swagger\Annotations as SWG;
  * @SWG\Resource(
  *     apiVersion="0.1",
  *     swaggerVersion="1.2",
- *     resourcePath="/foo/bar",
+ *     resourcePath="/foo",
  *     basePath="http://localhost:8000"
  * )
  */
-class FooBar
+class Foo
 {
     /**
      * @SWG\Api(
-     *     path="/foo/bar",
+     *     path="/foo",
      *     @SWG\Operations(
-     *         @SWG\Operation(method="GET", type="FooBarModel")
+     *         @SWG\Operation(method="GET", type="FooModel")
      *     )
      * )
      */
-    public function fooBar()
+    public function foo()
     {
 
     }

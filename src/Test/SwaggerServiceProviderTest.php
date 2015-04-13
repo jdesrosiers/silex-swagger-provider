@@ -1,12 +1,12 @@
 <?php
 
-namespace JDesrosiers\Tests\Silex\Provider;
+namespace JDesrosiers\Silex\Provider\Test;
 
 use JDesrosiers\Silex\Provider\SwaggerServiceProvider;
 use Silex\Application;
 use Symfony\Component\HttpKernel\Client;
 
-require_once __DIR__ . "/../../../../../vendor/autoload.php";
+require_once __DIR__ . "/../../vendor/autoload.php";
 
 date_default_timezone_set("GMT");
 
@@ -18,7 +18,7 @@ class SwaggerServiceProviderTest extends \PHPUnit_Framework_TestCase
     {
         $this->app = new Application();
         $this->app->register(new SwaggerServiceProvider(), array(
-            "swagger.srcDir" => __DIR__ . "/../../../../../vendor/zircote/swagger-php/library",
+            "swagger.srcDir" => __DIR__ . "/../../vendor/zircote/swagger-php/library",
             "swagger.servicePath" => __DIR__,
             "swagger.excludePath" => __DIR__ . "/Exclude",
         ));
@@ -143,10 +143,8 @@ class SwaggerServiceProviderTest extends \PHPUnit_Framework_TestCase
         $response = $client->getResponse();
 
         $this->assertEquals(304, $response->getStatusCode());
+        $this->assertFalse($response->headers->has("Content-Type"));
         $this->assertEquals("", $response->getContent());
-
-        // Responses without content should not have a Content-Type header.  This appears to be a bug in Symfony 2.
-//        $this->assertFalse($response->headers->has("Content-Type"));
     }
 
     public function testModified()

@@ -1,6 +1,6 @@
 <?php
 
-namespace JDesrosiers\Tests\Silex\Provider\Exclude;
+namespace JDesrosiers\Silex\Provider\Exclude\Test;
 
 use Swagger\Annotations as SWG;
 
